@@ -1,4 +1,4 @@
-![](/Home Dynamic v2/img/hdsv2.png)
+![](./img/hdsv2.png)
 
 # Home Dynamic v2
 
