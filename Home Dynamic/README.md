@@ -1,4 +1,4 @@
-![](/Home Dynamic/docs/Title.png)
+![](./docs/Title.png)
 
 # Home Dynamic 
 
