@@ -1,0 +1,1 @@
+Home Dynamic is a home automation system based on ArOZ Online BETA. This module allow you to control all electronics in your home with a button click.
