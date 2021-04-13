@@ -3,7 +3,7 @@
  * Designed by tobychui
  * 
  * This is a basic IoT Switch that support single channel ON / OFF function only
- * 
+ * Use this firmware with Wemos D1 R1 board profile
  */
 
 #include <ESP8266WiFi.h>        // Include the Wi-Fi library
@@ -12,10 +12,13 @@
 #include <ESP8266WebServer.h>   // Include the WebServer library
 
 //Change the properties of the IoT device
-const String DeviceName = "Switch";     //The name of this IoT device
+const String DeviceName = "Sinilink WiFi Relay";     //The name of this IoT device
 const int ListeningPort = 12110;        //The port where this IoT device listen
-int signalOutputPin = LED_BUILTIN;      //The pin to activate during on, default LED pins as demo
+int signalOutputPin = D14;               //The pin to activate the mosfet of relay
+int buttonPin = D6;
+int refPin = D8;
 bool poweredOn = true;                  //The current power state of the switch
+int val = 0;
 
 //Library Objects
 ESP8266WiFiMulti wifiMulti;                // Create an instance of the ESP8266WiFiMulti class, called 'wifiMulti'
@@ -57,6 +60,15 @@ void setup() {
   //Set output pins as OUTPUT and default it to HIGH
   pinMode(signalOutputPin, OUTPUT);
   digitalWrite(signalOutputPin, HIGH);
+
+  //Button input pin
+  pinMode(buttonPin, INPUT_PULLUP);
+
+  //Unknown pin that needed to be HIGH
+  pinMode(refPin, OUTPUT);
+  digitalWrite(refPin, HIGH);
+  pinMode(D9, OUTPUT);
+  digitalWrite(D9, HIGH);
  
   //Start WiFi Conenction Routines
   WiFiConfig();
@@ -150,6 +162,27 @@ void handle_endpoints() {
 
 //Main Loop
 void loop() { 
+   //Do stuffs for handling web interface
    server.handleClient();
    MDNS.update();
+
+   //Check if the button is pressed. Toggle the power if yes
+   val = digitalRead(buttonPin);
+   if (val == 0){
+      //Button is down. Toggle power state
+      if (poweredOn == true){
+        //Turn if off
+        digitalWrite(signalOutputPin, LOW);
+        poweredOn = false;
+        Serial.println("Turned off using button");
+      }else{  
+        //Turn it on
+        digitalWrite(signalOutputPin, HIGH);
+        poweredOn = true;
+        Serial.println("Turned on using button");
+      }
+      //Sleep for 1 second 
+      delay(1000);
+   }
+   
  }
